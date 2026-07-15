@@ -1,0 +1,138 @@
+﻿@model IEnumerable<ImageGalleryLightBoxX.Models.GalleryImage>
+
+@{
+    ViewBag.Title = "Gallery";
+    var list = Model.ToList();
+}
+
+<h2>Gallery</h2>
+
+<div class="filter-bar">
+    <a href="@Url.Action("Index", "Gallery")" class="@(ViewBag.SelectedCategory == null ? "active" : "")">All</a>
+    @foreach (var c in ViewBag.Categories as List<ImageGalleryLightBoxX.Models.Category>)
+    {
+        var isActive = ViewBag.SelectedCategory != null && (int)ViewBag.SelectedCategory == c.CategoryId;
+        <a href="@Url.Action("Index", "Gallery", new { categoryId = c.CategoryId })" class="@(isActive ? "active" : "")">@c.Name</a>
+    }
+</div>
+
+@if (!list.Any())
+{
+    <div class="gallery-empty">No images in this category yet.</div>
+}
+else
+{
+    <div class="gallery-grid" id="galleryGrid">
+        @for (int i = 0; i < list.Count; i++)
+        {
+            var img = list[i];
+            <div class="frame" data-index="@i" onclick="openLightbox('@img.FileName')">
+                <div class="frame-img-wrap">
+                    <img src="~/Content/Uploads/@img.FileName" loading="lazy" alt="@img.Title" />
+                </div>
+                <div class="frame-tag">
+                    <span>No. @((i + 1).ToString("D2"))</span>
+                    <span class="frame-cat">@img.Category.Name</span>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<div id="lightbox" class="lightbox-overlay">
+    <button class="lb-close lb-icon-btn" onclick="closeLightbox()" aria-label="Close">
+        <svg viewBox="0 0 24 24"><line x1="5" y1="5" x2="19" y2="19"></line><line x1="19" y1="5" x2="5" y2="19"></line></svg>
+    </button>
+
+    <div class="lb-sprockets"></div>
+    <img id="lb-img" class="lb-frame" src="" alt="" />
+    <div class="lb-sprockets"></div>
+
+    <div class="lb-meta">
+        <div id="lb-title" class="lb-title"></div>
+        <div id="lb-desc" class="lb-desc"></div>
+        <div id="lb-counter" class="lb-counter"></div>
+    </div>
+
+    <div class="lb-nav">
+        <button class="lb-icon-btn" onclick="navigate(-1)" aria-label="Previous image">
+            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <button class="lb-icon-btn" onclick="navigate(1)" aria-label="Next image">
+            <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        var images = @Html.Raw(Json.Encode(list.Select(i => new { i.FileName, i.Title, i.Description })));
+        var currentIndex = 0;
+        var overlay = document.getElementById('lightbox');
+
+        // Scroll-triggered reveal for the grid
+        (function () {
+            var frames = document.querySelectorAll('#galleryGrid .frame');
+            if (!frames.length) return;
+
+            if (!('IntersectionObserver' in window)) {
+                frames.forEach(function (f) { f.classList.add('is-visible'); });
+                return;
+            }
+
+            var observer = new IntersectionObserver(function (entries, obs) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        var el = entry.target;
+                        var idx = parseInt(el.dataset.index || '0', 10);
+                        setTimeout(function () { el.classList.add('is-visible'); }, idx * 45);
+                        obs.unobserve(el);
+                    }
+                });
+            }, { threshold: 0.12 });
+
+            frames.forEach(function (f) { observer.observe(f); });
+        })();
+
+        function openLightbox(fileName) {
+            currentIndex = images.findIndex(function (i) { return i.FileName === fileName; });
+            renderLightbox();
+            overlay.style.display = 'flex';
+            requestAnimationFrame(function () {
+                overlay.classList.add('is-visible');
+            });
+        }
+
+        function renderLightbox() {
+            var img = images[currentIndex];
+            document.getElementById('lb-img').src = '/Content/Uploads/' + img.FileName;
+            document.getElementById('lb-title').innerText = img.Title;
+            document.getElementById('lb-desc').innerText = img.Description || '';
+            document.getElementById('lb-counter').innerText = (currentIndex + 1) + ' / ' + images.length;
+        }
+
+        function navigate(dir) {
+            currentIndex = (currentIndex + dir + images.length) % images.length;
+            renderLightbox();
+        }
+
+        function closeLightbox() {
+            overlay.classList.remove('is-visible');
+            setTimeout(function () {
+                overlay.style.display = 'none';
+            }, 200);
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (overlay.style.display === 'flex') {
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowRight') navigate(1);
+                if (e.key === 'ArrowLeft') navigate(-1);
+            }
+        });
+
+        overlay.addEventListener('click', function (e) {
+            if (e.target === overlay) closeLightbox();
+        });
+    </script>
+}

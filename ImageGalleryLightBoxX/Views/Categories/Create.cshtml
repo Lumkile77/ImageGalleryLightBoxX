@@ -1,0 +1,23 @@
+﻿@model ImageGalleryLightBoxX.Models.Category
+
+@{
+    ViewBag.Title = "Create Category";
+}
+
+<h2>Create Category</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Name)
+        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Name)
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-link" })
+}
+

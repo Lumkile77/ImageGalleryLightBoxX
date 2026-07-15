@@ -1,0 +1,39 @@
+﻿@model IEnumerable<ImageGalleryLightBoxX.Models.Category>
+
+@{
+    ViewBag.Title = "Manage Categories";
+}
+
+<h2>Manage Categories</h2>
+
+<p>@Html.ActionLink("Create New Category", "Create", null, new { @class = "btn btn-primary" })</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@(item.IsActive ? "Active" : "Inactive")</td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.CategoryId }, new { @class = "btn btn-sm btn-secondary" })
+
+                    @using (Html.BeginForm("ToggleActive", "Categories", new { id = item.CategoryId }, FormMethod.Post, new { style = "display:inline" }))
+                    {
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-sm btn-warning">
+                        @(item.IsActive ? "Deactivate" : "Restore")
+                    </button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

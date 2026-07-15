@@ -1,0 +1,50 @@
+﻿@{
+    ViewBag.Title = "ImageGalleryLBx";
+}
+
+<main class="home-hero" id="homeHero">
+    <div class="home-eyebrow">A responsive image gallery</div>
+    <h1 class="home-title">Every image,<br />properly developed.</h1>
+    <p class="home-lead">
+        Organise your photographs into categories, browse them in a clean responsive grid,
+        and view each one full screen with previous and next navigation no clutter,
+        no ads, just your images.
+    </p>
+
+    <div class="home-actions">
+        <a href="@Url.Action("Index", "Gallery")" class="btn btn-primary">View the gallery</a>
+        @if (!Request.IsAuthenticated)
+        {
+            <a href="@Url.Action("Login", "Account")" class="btn btn-secondary">Administrator login</a>
+        }
+        else
+        {
+            <a href="@Url.Action("Upload", "Images")" class="btn btn-secondary">Upload an image</a>
+        }
+    </div>
+
+    <div class="home-strip">
+        <div class="home-strip-item">
+            <span class="home-strip-num">01</span>
+            <span>Organise into categories</span>
+        </div>
+        <div class="home-strip-item">
+            <span class="home-strip-num">02</span>
+            <span>Browse a responsive grid</span>
+        </div>
+        <div class="home-strip-item">
+            <span class="home-strip-num">03</span>
+            <span>View full screen, frame by frame</span>
+        </div>
+    </div>
+</main>
+
+@section scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            requestAnimationFrame(function () {
+                document.getElementById('homeHero').classList.add('is-loaded');
+            });
+        });
+    </script>
+}

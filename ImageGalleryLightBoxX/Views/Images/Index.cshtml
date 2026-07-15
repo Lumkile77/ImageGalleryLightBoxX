@@ -1,0 +1,45 @@
+﻿@model IEnumerable<ImageGalleryLightBoxX.Models.GalleryImage>
+
+@{
+    ViewBag.Title = "Manage Images";
+}
+
+<h2>Manage Images</h2>
+
+<p>@Html.ActionLink("Upload New Image", "Upload", null, new { @class = "btn btn-primary" })</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Preview</th>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <img src="~/Content/Uploads/@item.FileName" style="width:80px;height:60px;object-fit:cover;" />
+                </td>
+                <td>@item.Title</td>
+                <td>@item.Category.Name</td>
+                <td>@(item.IsActive ? "Active" : "Inactive")</td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.GalleryImageId }, new { @class = "btn btn-sm btn-secondary" })
+
+                   @using (Html.BeginForm("ToggleActive", "Images", new { id = item.GalleryImageId }, FormMethod.Post, new { style = "display:inline" }))
+                    {
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-sm btn-warning">
+                        @(item.IsActive ? "Deactivate" : "Restore")
+                    </button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

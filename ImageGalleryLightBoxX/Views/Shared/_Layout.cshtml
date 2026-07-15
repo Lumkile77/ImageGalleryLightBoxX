@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title ImageGalleryLBx</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                @Html.ActionLink("🖼️ImageGalleryLBx", "Index", "Home", null, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="@Url.Action("Index", "Gallery")">
+                            <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+                            Gallery
+                        </a>
+                    </li>
+                    @if (Request.IsAuthenticated)
+                    {
+                        <li>
+                            <a href="@Url.Action("Index", "Categories")">
+                                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20.59 13.41L11 3.83V3H3v8h.83l9.58 9.59a2 2 0 0 0 2.83 0l4.35-4.35a2 2 0 0 0 0-2.83z"></path><circle cx="6.5" cy="6.5" r="1"></circle></svg>
+                                Categories
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "Images")">
+                                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                                Images
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Upload", "Images")">
+                                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                Upload
+                            </a>
+                        </li>
+                    }
+                </ul>
+                <div>
+                    @Html.Partial("_LoginPartial")
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Image Gallery LightBox</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+
+    <script>
+        (function () {
+            var nav = document.querySelector('.navbar-inverse');
+            if (!nav) return;
+            window.addEventListener('scroll', function () {
+                if (window.scrollY > 30) {
+                    nav.classList.add('navbar-scrolled');
+                } else {
+                    nav.classList.remove('navbar-scrolled');
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

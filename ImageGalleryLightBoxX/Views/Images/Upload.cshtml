@@ -1,0 +1,93 @@
+﻿@model ImageGalleryLightBoxX.Models.GalleryImage
+
+@{
+    ViewBag.Title = "Upload Image";
+}
+
+<div class="card card-wide">
+    <h2>Upload image</h2>
+    <div class="card-subtitle">JPG, PNG or WEBP &middot; up to 5MB</div>
+
+    @using (Html.BeginForm("Upload", "Images", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            <div class="upload-drop" id="dropzone">
+                <input type="file" name="file" id="fileInput" accept=".jpg,.jpeg,.png,.webp" />
+                <div class="upload-drop-label" id="dropLabel"><strong>Choose a file</strong> or drag it here</div>
+            </div>
+            <div class="upload-preview" id="uploadPreview">
+                <img id="previewImg" src="" alt="Preview" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Title)
+            @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Title)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Description)
+            @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = 3 })
+            @Html.ValidationMessageFor(m => m.Description)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.CategoryId)
+            @Html.DropDownList("CategoryId", null, "-- Select category --", new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.CategoryId)
+        </div>
+
+        <button type="submit" class="btn btn-primary">Upload image</button>
+    }
+
+    <div class="card-footer-link">
+        @Html.ActionLink("Cancel and go back", "Index")
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        var fileInput = document.getElementById('fileInput');
+        var dropLabel = document.getElementById('dropLabel');
+        var previewBox = document.getElementById('uploadPreview');
+        var previewImg = document.getElementById('previewImg');
+        var dropzone = document.getElementById('dropzone');
+
+        fileInput.addEventListener('change', function () {
+            var file = fileInput.files[0];
+            if (!file) return;
+
+            dropLabel.innerHTML = '<strong>' + file.name + '</strong>';
+
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                previewImg.src = e.target.result;
+                previewBox.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        });
+
+        ['dragenter', 'dragover'].forEach(function (evt) {
+            dropzone.addEventListener(evt, function (e) {
+                e.preventDefault();
+                dropzone.classList.add('is-dragover');
+            });
+        });
+        ['dragleave', 'drop'].forEach(function (evt) {
+            dropzone.addEventListener(evt, function (e) {
+                e.preventDefault();
+                dropzone.classList.remove('is-dragover');
+            });
+        });
+        dropzone.addEventListener('drop', function (e) {
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                fileInput.dispatchEvent(new Event('change'));
+            }
+        });
+    </script>
+}

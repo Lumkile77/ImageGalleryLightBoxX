@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewBag.Title ImageGalleryLBx</title>
+    <title>@ViewBag.Title - ImageGalleryLBx</title>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
@@ -12,7 +12,18 @@
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
-                @Html.ActionLink("🖼️ImageGalleryLBx", "Index", "Home", null, new { @class = "navbar-brand" })
+                <a class="navbar-brand" href="@Url.Action("Index", "Home")">
+                    <svg class="brand-mark" viewBox="0 0 72 40" width="40" height="20" aria-hidden="true">
+                        <g stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 12 L4 4 L12 4" />
+                            <path d="M68 12 L68 4 L60 4" />
+                            <path d="M4 28 L4 36 L12 36" />
+                            <path d="M68 28 L68 36 L60 36" />
+                        </g>
+                        <text x="36" y="26" font-family="Georgia, serif" font-size="16" fill="currentColor" text-anchor="middle">LBx</text>
+                    </svg>
+                    ImageGalleryLBx
+                </a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
@@ -44,9 +55,7 @@
                         </li>
                     }
                 </ul>
-                <div>
-                    @Html.Partial("_LoginPartial")
-                </div>
+                @Html.Partial("_LoginPartial")
             </div>
         </div>
     </div>

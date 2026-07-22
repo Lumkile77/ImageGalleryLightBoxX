@@ -970,5 +970,21 @@ h2 {
         .lb-desc {
             font-size: 0.8rem;
         }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+        }
+
+        .brand-mark {
+            color: var(--accent);
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+
+
     }
+
+
 }
